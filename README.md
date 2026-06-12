@@ -1,4 +1,4 @@
-#Paisa-Tracker
+# Paisa-Tracker
 ## Expense Tracker Application
 
 **Live Demo:** [https://expense-trackk-app.web.app](https://expense-trackk-app.web.app)
