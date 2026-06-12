@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import { useExpenses } from '../../hooks/useExpenses';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown, Receipt } from 'lucide-react';
 import { format, endOfWeek, endOfMonth, eachWeekOfInterval, eachMonthOfInterval, subMonths, isWithinInterval } from 'date-fns';
 import { CHART_COLORS } from '../../utils/categories';
+import { formatCurrency } from '../../utils/format';
+import { useCurrency } from '../../context/CurrencyContext';
 
 export default function OverviewPage() {
   const { expenses, totalIncome, totalExpenses, loading } = useExpenses();
+  const { currency } = useCurrency();
   const [period, setPeriod] = useState<'weekly' | 'monthly'>('weekly');
 
   // Weekly chart data (last 4 weeks)
@@ -25,7 +28,7 @@ export default function OverviewPage() {
         });
         const income = weekExpenses.filter((e) => e.type === 'income').reduce((s, e) => s + e.amount, 0);
         const exp = weekExpenses.filter((e) => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-        return { name: `Week ${i + 1}`, Income: income, Expenses: exp };
+        return { name: `W${i + 1}`, Income: income, Expenses: exp };
       });
     } else {
       const months = eachMonthOfInterval({
@@ -73,48 +76,51 @@ export default function OverviewPage() {
 
   return (
     <div className="overview page-enter">
-      <div className="overview-header">
-        <h1>Overview</h1>
+      <div className="overview-header" style={{ marginBottom: 20 }}>
+        <h2>Statistics</h2>
       </div>
 
       {/* Summary Cards */}
       <div className="summary-cards">
         <div className="summary-card">
           <div className="summary-card-icon income" aria-hidden="true">
-            <TrendingUp size={22} />
+            <TrendingUp size={22} color="var(--success-500)" />
           </div>
-          <div className="summary-card-label">Total Income</div>
-          <div className="summary-card-amount" style={{ color: 'var(--success-600)' }}>
-            ${totalIncome.toFixed(2)}
+          <div className="summary-card-label">Income</div>
+          <div className="summary-card-amount" style={{ color: 'var(--text-primary)' }}>
+            {formatCurrency(totalIncome, currency)}
           </div>
         </div>
         <div className="summary-card">
           <div className="summary-card-icon expense" aria-hidden="true">
-            <TrendingDown size={22} />
+            <TrendingDown size={22} color="var(--danger-500)" />
           </div>
-          <div className="summary-card-label">Total Expenses</div>
-          <div className="summary-card-amount" style={{ color: 'var(--accent-600)' }}>
-            ${totalExpenses.toFixed(2)}
+          <div className="summary-card-label">Expenses</div>
+          <div className="summary-card-amount" style={{ color: 'var(--text-primary)' }}>
+            {formatCurrency(totalExpenses, currency)}
           </div>
         </div>
       </div>
 
       {/* Statistics Chart */}
       <div className="chart-card">
-        <h3>Statistics</h3>
-        <div className="chart-period">
-          <button
-            className={`period-btn ${period === 'weekly' ? 'active' : ''}`}
-            onClick={() => setPeriod('weekly')}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <h3 style={{ margin: 0 }}>Analytics</h3>
+          <select 
+            value={period} 
+            onChange={(e) => setPeriod(e.target.value as any)}
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '8px', 
+              border: '1px solid var(--gray-200)',
+              background: 'var(--bg-card)',
+              outline: 'none',
+              fontSize: '0.85rem'
+            }}
           >
-            Weekly
-          </button>
-          <button
-            className={`period-btn ${period === 'monthly' ? 'active' : ''}`}
-            onClick={() => setPeriod('monthly')}
-          >
-            Monthly
-          </button>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
         </div>
 
         {expenses.length === 0 ? (
@@ -126,24 +132,28 @@ export default function OverviewPage() {
             <p>Add some transactions to see your statistics</p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={chartData} barGap={4}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="name" fontSize={12} tick={{ fill: '#737373' }} />
-              <YAxis fontSize={12} tick={{ fill: '#737373' }} tickFormatter={(v) => `$${v}`} />
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--primary-500)" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="var(--primary-500)" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis dataKey="name" fontSize={12} tick={{ fill: '#737373' }} axisLine={false} tickLine={false} />
+              <YAxis fontSize={12} tick={{ fill: '#737373' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
               <Tooltip
                 contentStyle={{
                   borderRadius: 12,
                   border: 'none',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  boxShadow: 'var(--shadow-lg)',
                   fontSize: 13,
                 }}
-                formatter={(value) => [`$${Number(value ?? 0).toFixed(2)}`]}
+                formatter={(value) => [`${formatCurrency(Number(value), currency)}`]}
               />
-              <Legend />
-              <Bar dataKey="Income" fill="#22c55e" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="Expenses" fill="#f97316" radius={[6, 6, 0, 0]} />
-            </BarChart>
+              <Area type="monotone" dataKey="Expenses" stroke="var(--primary-500)" strokeWidth={3} fillOpacity={1} fill="url(#colorExp)" />
+            </AreaChart>
           </ResponsiveContainer>
         )}
       </div>

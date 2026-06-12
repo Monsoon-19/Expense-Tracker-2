@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import { useExpenses } from './hooks/useExpenses';
 import AuthPage from './components/Auth/AuthPage';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
@@ -116,7 +117,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <CurrencyProvider>
+          <AppContent />
+        </CurrencyProvider>
       </AuthProvider>
     </BrowserRouter>
   );

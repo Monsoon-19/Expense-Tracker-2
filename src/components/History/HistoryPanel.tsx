@@ -4,6 +4,8 @@ import ExpenseCard from '../Expenses/ExpenseCard';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../types';
 import { Search, SlidersHorizontal, Receipt } from 'lucide-react';
 import type { Expense } from '../../types';
+import { formatCurrency } from '../../utils/format';
+import { useCurrency } from '../../context/CurrencyContext';
 
 interface HistoryProps {
   onEdit: (expense: Expense) => void;
@@ -11,6 +13,7 @@ interface HistoryProps {
 
 export default function HistoryPanel({ onEdit }: HistoryProps) {
   const { getFilteredExpenses, deleteExpense, loading } = useExpenses();
+  const { currency } = useCurrency();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [category, setCategory] = useState('');
@@ -150,7 +153,7 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
       <div className="history-total">
         <span>Net Total ({filtered.length} items)</span>
         <span style={{ color: total >= 0 ? 'var(--success-600)' : 'var(--accent-600)' }}>
-          {total >= 0 ? '+' : ''}${total.toFixed(2)}
+          {total >= 0 ? '+' : ''}{formatCurrency(Math.abs(total), currency)}
         </span>
       </div>
 

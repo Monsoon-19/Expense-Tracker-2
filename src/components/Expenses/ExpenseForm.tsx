@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../types';
 import type { Expense, ExpenseFormData } from '../../types';
 import { format } from 'date-fns';
+import { useCurrency } from '../../context/CurrencyContext';
 
 interface ExpenseFormProps {
   onSubmit: (data: ExpenseFormData) => Promise<void>;
@@ -11,6 +12,7 @@ interface ExpenseFormProps {
 }
 
 export default function ExpenseForm({ onSubmit, onClose, editingExpense }: ExpenseFormProps) {
+  const { currency } = useCurrency();
   const [type, setType] = useState<'expense' | 'income'>(editingExpense?.type ?? 'expense');
   const [amount, setAmount] = useState(editingExpense?.amount?.toString() ?? '');
   const [category, setCategory] = useState(editingExpense?.category ?? '');
@@ -79,7 +81,9 @@ export default function ExpenseForm({ onSubmit, onClose, editingExpense }: Expen
           <div className="form-group">
             <label className="form-label" htmlFor="amount">Amount</label>
             <div className="amount-input-wrapper">
-              <span className="amount-prefix">$</span>
+              <span className="amount-prefix">
+                {currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '¥'}
+              </span>
               <input
                 id="amount"
                 className="form-input amount-input"

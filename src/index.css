@@ -1,45 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary-50: #f5f0ff;
-  --primary-100: #ede5ff;
-  --primary-200: #ddd6fe;
-  --primary-300: #c4b5fd;
-  --primary-400: #a78bfa;
-  --primary-500: #8b5cf6;
-  --primary-600: #7c3aed;
-  --primary-700: #6d28d9;
-  --primary-800: #5b21b6;
-  --primary-900: #4c1d95;
-  --accent-400: #fb923c;
+  /* New Teal Palette (Dark Theme Adjusted) */
+  --primary-50: #1b2626;
+  --primary-100: #1b2f2e;
+  --primary-200: #1f3f3d;
+  --primary-300: #255452;
+  --primary-400: #2b6e6b;
+  --primary-500: #429690;
+  --primary-600: #4cb8b1;
+  --primary-700: #6cd1cb;
+  --primary-800: #93e6e1;
+  --primary-900: #c2f5f2;
+
+  --accent-400: #ea580c;
   --accent-500: #f97316;
-  --accent-600: #ea580c;
-  --success-500: #22c55e;
-  --success-600: #16a34a;
-  --danger-500: #ef4444;
-  --danger-600: #dc2626;
-  --gray-50: #fafafa;
-  --gray-100: #f5f5f5;
-  --gray-200: #e5e5e5;
-  --gray-300: #d4d4d4;
-  --gray-400: #a3a3a3;
-  --gray-500: #737373;
-  --gray-600: #525252;
-  --gray-700: #404040;
-  --gray-800: #262626;
-  --gray-900: #171717;
-  --bg-app: #f8f5ff;
-  --bg-card: #ffffff;
-  --text-primary: var(--gray-900);
-  --text-secondary: var(--gray-500);
-  --border-light: var(--gray-200);
-  --gradient-primary: linear-gradient(135deg, var(--primary-600), var(--primary-400));
-  --gradient-balance: linear-gradient(135deg, #7c3aed, #a78bfa, #c4b5fd);
-  --shadow-sm: 0 2px 8px rgba(124, 58, 237, 0.06);
-  --shadow-md: 0 4px 16px rgba(124, 58, 237, 0.08);
-  --shadow-lg: 0 8px 32px rgba(124, 58, 237, 0.12);
-  --shadow-card: 0 2px 12px rgba(124, 58, 237, 0.06);
-  --shadow-card-hover: 0 8px 24px rgba(124, 58, 237, 0.12);
+  --accent-600: #fb923c;
+  --success-500: #25a969; /* Figma income green */
+  --success-600: #35c07b;
+  --danger-500: #f95b51; /* Figma expense red */
+  --danger-600: #ff7870;
+
+  --gray-900: #fafafa;
+  --gray-800: #f5f5f5;
+  --gray-700: #e5e5e5;
+  --gray-600: #d4d4d4;
+  --gray-500: #a3a3a3;
+  --gray-400: #737373;
+  --gray-300: #525252;
+  --gray-200: #404040;
+  --gray-100: #262626;
+  --gray-50: #171717;
+  
+  --bg-app: #121212; /* Professional dark background */
+  --bg-card: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --border-light: #262626;
+  
+  --gradient-primary: linear-gradient(135deg, var(--primary-500), var(--primary-400));
+  --gradient-balance: linear-gradient(135deg, #1f3f3d, #255452);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;

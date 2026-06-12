@@ -2,6 +2,8 @@ import { format } from 'date-fns';
 import { Pencil, Trash2 } from 'lucide-react';
 import type { Expense } from '../../types';
 import { getCategoryEmoji, getCategoryClass } from '../../utils/categories';
+import { formatCurrency } from '../../utils/format';
+import { useCurrency } from '../../context/CurrencyContext';
 
 interface ExpenseCardProps {
   expense: Expense;
@@ -11,6 +13,7 @@ interface ExpenseCardProps {
 }
 
 export default function ExpenseCard({ expense, index, onEdit, onDelete }: ExpenseCardProps) {
+  const { currency } = useCurrency();
   const dateStr = expense.date?.toDate
     ? format(expense.date.toDate(), 'MMM dd, yyyy')
     : '';
@@ -22,7 +25,7 @@ export default function ExpenseCard({ expense, index, onEdit, onDelete }: Expens
       className="expense-card"
       style={{ animationDelay: `${index * 0.05}s` }}
       role="listitem"
-      aria-label={`${expense.description} - ${isIncome ? '+' : '-'}$${expense.amount.toFixed(2)}`}
+      aria-label={`${expense.description} - ${isIncome ? '+' : '-'}${formatCurrency(expense.amount, currency)}`}
     >
       <div className={`expense-icon ${getCategoryClass(expense.category)}`} aria-hidden="true">
         {getCategoryEmoji(expense.category)}
@@ -32,7 +35,7 @@ export default function ExpenseCard({ expense, index, onEdit, onDelete }: Expens
         <div className="expense-date">{dateStr}</div>
       </div>
       <div className={`expense-amount ${expense.type}`}>
-        {isIncome ? '+' : '-'}${expense.amount.toFixed(2)}
+        {isIncome ? '+' : '-'}{formatCurrency(expense.amount, currency).replace(/[^0-9.,]/g, '')}
       </div>
       <div className="expense-actions">
         <button
