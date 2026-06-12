@@ -1,75 +1,40 @@
-# React + TypeScript + Vite
+# Expense Tracker Application
 
-http://localhost:5173/
+**Live Demo:** [https://expense-trackk-app.web.app](https://expense-trackk-app.web.app)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, premium Dark Mode Expense Tracker built with React, TypeScript, Vite, and Firebase. This application allows users to seamlessly manage their personal finances with real-time syncing.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Dark Mode UI:** A professional and beautiful dark-themed interface built from scratch.
+- **Global Currency Selection:** Choose between `₹ INR`, `$ USD`, `€ EUR`, `£ GBP`, and `¥ JPY`. Selections persist globally across the app.
+- **User Authentication:** Secure email/password login and registration via Firebase Auth.
+- **Real-Time Data (Firestore):** Add, edit, or delete transactions (expenses and incomes). Changes sync instantly across devices.
+- **Interactive Analytics:** View your spending habits with real-time updating Recharts area charts.
+- **Responsive Layout:** Works smoothly on desktop and mobile devices.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- Firebase (Authentication, Firestore, Hosting)
+- Recharts (for Dashboard Analytics)
+- Lucide React (for Icons)
 
-## Expanding the ESLint configuration
+## Getting Started Locally
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your `.env` with Firebase configurations (see `.env.example`).
+4. Run the local development server:
+   ```bash
+   npm run dev
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Live Deployment
+This project is automatically deployed to Firebase Hosting. You can access the live version here:
+[https://expense-trackk-app.web.app](https://expense-trackk-app.web.app)
