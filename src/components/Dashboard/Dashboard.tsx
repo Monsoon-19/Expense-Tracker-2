@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { formatCurrency } from '../../utils/format';
 import { useExpenses } from '../../hooks/useExpenses';
@@ -13,6 +14,7 @@ interface DashboardProps {
 
 export default function Dashboard({ onEdit }: DashboardProps) {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const { expenses, balance, totalIncome, totalExpenses, deleteExpense, loading } = useExpenses();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,6 +36,15 @@ export default function Dashboard({ onEdit }: DashboardProps) {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showDropdown]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth', { replace: true });
+    } catch (error) {
+      console.error('Failed to log out', error);
+    }
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -103,7 +114,7 @@ export default function Dashboard({ onEdit }: DashboardProps) {
                 <option value="JPY">¥ JPY</option>
               </select>
             </div>
-            <button className="profile-dropdown-item danger" onClick={logout} id="logout-btn">
+            <button className="profile-dropdown-item danger" onClick={handleLogout} id="logout-btn">
               <LogOut size={18} />
               Sign Out
             </button>
