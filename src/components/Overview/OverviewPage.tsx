@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useExpenses } from '../../hooks/useExpenses';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { TrendingDown, TrendingUp } from 'lucide-react';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachWeekOfInterval, eachMonthOfInterval, subMonths, isWithinInterval } from 'date-fns';
+import { TrendingUp, TrendingDown, Receipt } from 'lucide-react';
+import { format, endOfWeek, endOfMonth, eachWeekOfInterval, eachMonthOfInterval, subMonths, isWithinInterval } from 'date-fns';
 import { CHART_COLORS } from '../../utils/categories';
 
 export default function OverviewPage() {
-  const { expenses, totalIncome, totalExpenses } = useExpenses();
+  const { expenses, totalIncome, totalExpenses, loading } = useExpenses();
   const [period, setPeriod] = useState<'weekly' | 'monthly'>('weekly');
 
   // Weekly chart data (last 4 weeks)
@@ -63,6 +63,14 @@ export default function OverviewPage() {
     }));
   }, [expenses]);
 
+  if (loading) {
+    return (
+      <div className="loading-screen" style={{ minHeight: '50vh' }}>
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
   return (
     <div className="overview page-enter">
       <div className="overview-header">
@@ -73,7 +81,7 @@ export default function OverviewPage() {
       <div className="summary-cards">
         <div className="summary-card">
           <div className="summary-card-icon income" aria-hidden="true">
-            <TrendingDown size={22} />
+            <TrendingUp size={22} />
           </div>
           <div className="summary-card-label">Total Income</div>
           <div className="summary-card-amount" style={{ color: 'var(--success-600)' }}>
@@ -82,7 +90,7 @@ export default function OverviewPage() {
         </div>
         <div className="summary-card">
           <div className="summary-card-icon expense" aria-hidden="true">
-            <TrendingUp size={22} />
+            <TrendingDown size={22} />
           </div>
           <div className="summary-card-label">Total Expenses</div>
           <div className="summary-card-amount" style={{ color: 'var(--accent-600)' }}>
@@ -108,25 +116,36 @@ export default function OverviewPage() {
             Monthly
           </button>
         </div>
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={chartData} barGap={4}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="name" fontSize={12} tick={{ fill: '#737373' }} />
-            <YAxis fontSize={12} tick={{ fill: '#737373' }} tickFormatter={(v) => `$${v}`} />
-            <Tooltip
-              contentStyle={{
-                borderRadius: 12,
-                border: 'none',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                fontSize: 13,
-              }}
-              formatter={(value: number) => [`$${value.toFixed(2)}`, undefined]}
-            />
-            <Legend />
-            <Bar dataKey="Income" fill="#22c55e" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="Expenses" fill="#f97316" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+
+        {expenses.length === 0 ? (
+          <div className="empty-state" style={{ padding: '32px 16px' }}>
+            <div className="empty-state-icon">
+              <Receipt size={28} />
+            </div>
+            <h3>No data yet</h3>
+            <p>Add some transactions to see your statistics</p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={chartData} barGap={4}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="name" fontSize={12} tick={{ fill: '#737373' }} />
+              <YAxis fontSize={12} tick={{ fill: '#737373' }} tickFormatter={(v) => `$${v}`} />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 12,
+                  border: 'none',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  fontSize: 13,
+                }}
+                formatter={(value) => [`$${Number(value ?? 0).toFixed(2)}`]}
+              />
+              <Legend />
+              <Bar dataKey="Income" fill="#22c55e" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="Expenses" fill="#f97316" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       {/* Category Breakdown */}

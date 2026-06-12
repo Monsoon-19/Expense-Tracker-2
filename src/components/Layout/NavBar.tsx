@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Home, Clock, PieChart, Plus } from 'lucide-react';
 
 interface NavBarProps {

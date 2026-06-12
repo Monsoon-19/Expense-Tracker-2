@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X } from 'lucide-react';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../types';
 import type { Expense, ExpenseFormData } from '../../types';
@@ -11,22 +11,14 @@ interface ExpenseFormProps {
 }
 
 export default function ExpenseForm({ onSubmit, onClose, editingExpense }: ExpenseFormProps) {
-  const [type, setType] = useState<'expense' | 'income'>('expense');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('');
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [description, setDescription] = useState('');
+  const [type, setType] = useState<'expense' | 'income'>(editingExpense?.type ?? 'expense');
+  const [amount, setAmount] = useState(editingExpense?.amount?.toString() ?? '');
+  const [category, setCategory] = useState(editingExpense?.category ?? '');
+  const [date, setDate] = useState(
+    editingExpense ? format(editingExpense.date.toDate(), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')
+  );
+  const [description, setDescription] = useState(editingExpense?.description ?? '');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (editingExpense) {
-      setType(editingExpense.type);
-      setAmount(editingExpense.amount.toString());
-      setCategory(editingExpense.category);
-      setDate(format(editingExpense.date.toDate(), 'yyyy-MM-dd'));
-      setDescription(editingExpense.description);
-    }
-  }, [editingExpense]);
 
   const categories = type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
 

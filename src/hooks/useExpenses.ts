@@ -9,7 +9,6 @@ import {
   orderBy,
   onSnapshot,
   Timestamp,
-  where,
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { useAuth } from '../context/AuthContext';
@@ -22,6 +21,7 @@ export function useExpenses() {
 
   useEffect(() => {
     if (!user || !db) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- early exit when no user/db
       setExpenses([]);
       setLoading(false);
       return;
@@ -84,6 +84,7 @@ export function useExpenses() {
       endDate?: string;
       category?: string;
       type?: 'expense' | 'income';
+      searchQuery?: string;
       sortBy?: 'date' | 'amount';
       sortOrder?: 'asc' | 'desc';
     }) => {
@@ -104,16 +105,21 @@ export function useExpenses() {
       if (filters.type) {
         filtered = filtered.filter((e) => e.type === filters.type);
       }
+      if (filters.searchQuery) {
+        const q = filters.searchQuery.toLowerCase();
+        filtered = filtered.filter(
+          (e) =>
+            e.description.toLowerCase().includes(q) ||
+            e.category.toLowerCase().includes(q)
+        );
+      }
 
       const sortBy = filters.sortBy || 'date';
       const sortOrder = filters.sortOrder || 'desc';
       filtered.sort((a, b) => {
-        let comparison = 0;
-        if (sortBy === 'date') {
-          comparison = a.date.toDate().getTime() - b.date.toDate().getTime();
-        } else {
-          comparison = a.amount - b.amount;
-        }
+        const comparison = sortBy === 'date'
+          ? a.date.toDate().getTime() - b.date.toDate().getTime()
+          : a.amount - b.amount;
         return sortOrder === 'desc' ? -comparison : comparison;
       });
 

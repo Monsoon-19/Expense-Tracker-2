@@ -27,8 +27,8 @@ export default function AuthPage() {
         }
         await register(email, password, displayName);
       }
-    } catch (err: any) {
-      const code = err?.code || '';
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code || '';
       if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
         setError('Invalid email or password');
       } else if (code === 'auth/email-already-in-use') {
@@ -38,7 +38,7 @@ export default function AuthPage() {
       } else if (code === 'auth/invalid-email') {
         setError('Please enter a valid email address');
       } else {
-        setError(err.message || 'Something went wrong');
+        setError((err as Error).message || 'Something went wrong');
       }
     } finally {
       setLoading(false);

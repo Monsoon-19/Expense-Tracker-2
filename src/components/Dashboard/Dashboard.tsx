@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useExpenses } from '../../hooks/useExpenses';
 import ExpenseCard from '../Expenses/ExpenseCard';
-import { TrendingDown, TrendingUp, LogOut, Receipt } from 'lucide-react';
+import { TrendingUp, TrendingDown, LogOut, Receipt } from 'lucide-react';
 import type { Expense } from '../../types';
 
 interface DashboardProps {
@@ -13,16 +13,38 @@ export default function Dashboard({ onEdit }: DashboardProps) {
   const { user, logout } = useAuth();
   const { expenses, balance, totalIncome, totalExpenses, deleteExpense, loading } = useExpenses();
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const recentExpenses = expenses.slice(0, 8);
   const displayName = user?.displayName || user?.email?.split('@')[0] || 'User';
   const initial = displayName.charAt(0).toUpperCase();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showDropdown]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good Morning';
     if (hour < 17) return 'Good Afternoon';
     return 'Good Evening';
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(amount);
   };
 
   const handleDelete = async (id: string) => {
@@ -41,7 +63,7 @@ export default function Dashboard({ onEdit }: DashboardProps) {
 
   return (
     <div className="dashboard page-enter">
-      <div className="dashboard-header" style={{ position: 'relative' }}>
+      <div className="dashboard-header" ref={dropdownRef} style={{ position: 'relative' }}>
         <div className="greeting">
           <h2>{getGreeting()} 👋</h2>
           <h1>{displayName}</h1>
@@ -71,24 +93,24 @@ export default function Dashboard({ onEdit }: DashboardProps) {
       {/* Balance Card */}
       <section className="balance-card" aria-label="Balance summary">
         <div className="balance-label">Total Balance</div>
-        <div className="balance-amount">${balance.toFixed(2)}</div>
+        <div className="balance-amount">{formatCurrency(balance)}</div>
         <div className="balance-row">
           <div className="balance-item">
             <div className="balance-icon income" aria-hidden="true">
-              <TrendingDown />
+              <TrendingUp />
             </div>
             <div>
               <div className="balance-item-label">Income</div>
-              <div className="balance-item-amount">${totalIncome.toFixed(2)}</div>
+              <div className="balance-item-amount">{formatCurrency(totalIncome)}</div>
             </div>
           </div>
           <div className="balance-item">
             <div className="balance-icon expense" aria-hidden="true">
-              <TrendingUp />
+              <TrendingDown />
             </div>
             <div>
               <div className="balance-item-label">Expenses</div>
-              <div className="balance-item-amount">${totalExpenses.toFixed(2)}</div>
+              <div className="balance-item-amount">{formatCurrency(totalExpenses)}</div>
             </div>
           </div>
         </div>
@@ -98,6 +120,11 @@ export default function Dashboard({ onEdit }: DashboardProps) {
       <section aria-label="Recent transactions">
         <div className="section-header">
           <h3>Recent Transactions</h3>
+          {expenses.length > 8 && (
+            <a href="/history" style={{ fontSize: '0.85rem', color: 'var(--primary-600)', fontWeight: 600 }}>
+              View all
+            </a>
+          )}
         </div>
 
         {recentExpenses.length === 0 ? (

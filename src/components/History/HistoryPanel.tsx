@@ -10,7 +10,7 @@ interface HistoryProps {
 }
 
 export default function HistoryPanel({ onEdit }: HistoryProps) {
-  const { getFilteredExpenses, deleteExpense } = useExpenses();
+  const { getFilteredExpenses, deleteExpense, loading } = useExpenses();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [category, setCategory] = useState('');
@@ -18,6 +18,7 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
   const [sortBy, setSortBy] = useState<'date' | 'amount'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const allCategories = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
   const uniqueCategories = [...new Set(allCategories)];
@@ -26,7 +27,8 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
     startDate: startDate || undefined,
     endDate: endDate || undefined,
     category: category || undefined,
-    type: type as any || undefined,
+    type: (type as 'expense' | 'income') || undefined,
+    searchQuery: searchQuery || undefined,
     sortBy,
     sortOrder,
   });
@@ -41,25 +43,36 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="loading-screen" style={{ minHeight: '50vh' }}>
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
   return (
     <div className="history page-enter">
       <div className="history-header">
         <h1>Transaction History</h1>
       </div>
 
+      {/* Search Bar */}
+      <div className="search-bar">
+        <Search size={18} className="search-icon" />
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search transactions..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search transactions"
+          id="search-transactions"
+        />
+      </div>
+
       <button
-        className="btn-primary"
-        style={{
-          background: 'white',
-          color: 'var(--text-primary)',
-          boxShadow: 'var(--shadow-card)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 8,
-          marginBottom: 16,
-          fontSize: '0.9rem',
-        }}
+        className="btn-filter-toggle"
         onClick={() => setShowFilters(!showFilters)}
         id="toggle-filters-btn"
       >
@@ -103,7 +116,7 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
             <select
               className="filter-input"
               value={type}
-              onChange={(e) => setType(e.target.value as any)}
+              onChange={(e) => setType(e.target.value as '' | 'expense' | 'income')}
               aria-label="Type filter"
             >
               <option value="">All Types</option>
@@ -147,7 +160,7 @@ export default function HistoryPanel({ onEdit }: HistoryProps) {
             <Receipt size={36} />
           </div>
           <h3>No transactions found</h3>
-          <p>Try adjusting your filters</p>
+          <p>{searchQuery ? 'Try a different search term' : 'Try adjusting your filters'}</p>
         </div>
       ) : (
         <div className="expense-list" role="list">

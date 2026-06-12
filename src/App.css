@@ -900,6 +900,70 @@
   background: #fef2f2;
 }
 
+/* ===== Search Bar ===== */
+.search-bar {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 16px 14px 46px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-full);
+  font-size: 0.95rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input:focus {
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+  background: white;
+}
+
+.search-input::placeholder {
+  color: var(--gray-400);
+}
+
+/* ===== Filter Toggle Button ===== */
+.btn-filter-toggle {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 2px solid var(--gray-100);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.btn-filter-toggle:hover {
+  border-color: var(--primary-200);
+  color: var(--primary-600);
+  background: var(--primary-50);
+}
+
 /* ===== Responsive ===== */
 @media (min-width: 768px) {
   .app-main {
